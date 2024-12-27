@@ -322,8 +322,8 @@ bool deserializeConfig(JsonObject doc, bool fromFS) {
     for (; s<WLED_MAX_BUTTONS; s++) {
       btnPin[s]           = -1;
       buttonType[s]       = BTN_TYPE_NONE;
-      macroButton[s]      = 0;
-      macroLongPress[s]   = 0;
+      macroButton[s]      = 2;
+      macroLongPress[s]   = 1;
       macroDoublePress[s] = 0;
     }
   } else {
