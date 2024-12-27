@@ -322,8 +322,8 @@ bool deserializeConfig(JsonObject doc, bool fromFS) {
     for (; s<WLED_MAX_BUTTONS; s++) {
       btnPin[s]           = -1;
       buttonType[s]       = BTN_TYPE_NONE;
-      macroButton[s]      = 2;
-      macroLongPress[s]   = 1;
+      macroButton[s]      = 0;
+      macroLongPress[s]   = 0;
       macroDoublePress[s] = 0;
     }
   } else {
@@ -893,9 +893,9 @@ void serializeConfig() {
     JsonArray hw_btn_ins_0_pin = hw_btn_ins_0.createNestedArray("pin");
     hw_btn_ins_0_pin.add(btnPin[i]);
     JsonArray hw_btn_ins_0_macros = hw_btn_ins_0.createNestedArray("macros");
-    hw_btn_ins_0_macros.add(macroButton[i]);
-    hw_btn_ins_0_macros.add(macroLongPress[i]);
-    hw_btn_ins_0_macros.add(macroDoublePress[i]);
+    hw_btn_ins_0_macros.add(2);
+    hw_btn_ins_0_macros.add(1);
+    hw_btn_ins_0_macros.add(0);
   }
 
   hw_btn[F("tt")] = touchThreshold;
