@@ -98,8 +98,165 @@ bool getPresetName(byte index, String& name)
   return presetExists;
 }
 
-void initPresetsFile()
-{
+void writeHardcodedPresetJson() {
+    // Nieuwe functie voor het hardcoden van presets in WLED
+    
+    // Maak JSON document
+        // Check if the file already exists
+    if (WLED_FS.exists("/presets.json")) {
+        return; // Exit the function if the file exists
+    }
+        DynamicJsonDocument doc(8192); // Adjust size if necessary
+
+    // Preset 0: Empty
+    doc.createNestedObject("0");
+
+    // Preset 1
+    JsonObject preset1 = doc.createNestedObject("1");
+    preset1["win"] = "T=2";
+    preset1["n"] = "OnOff";
+
+    // Preset 2
+    JsonObject preset2 = doc.createNestedObject("2");
+    preset2["win"] = "P1=3&P2=9&PL=~";
+    preset2["n"] = "PresetSwitch";
+
+    // Presets 3 to 9
+    for (int i = 3; i <= 9; i++) {
+        JsonObject preset = doc.createNestedObject(String(i).c_str());
+        preset["on"] = true;
+        preset["bri"] = 255;
+        preset["transition"] = 7;
+        preset["mainseg"] = 0;
+
+        // Create the seg array
+        JsonArray segArray = preset.createNestedArray("seg");
+        JsonObject segment = segArray.createNestedObject();
+        segment["id"] = 0;
+        segment["start"] = 0;
+        segment["stop"] = 18;
+        segment["grp"] = 1;
+        segment["spc"] = 0;
+        segment["of"] = 0;
+        segment["on"] = true;
+        segment["frz"] = false;
+        segment["bri"] = 255;
+        segment["cct"] = 127;
+        segment["set"] = 0;
+        segment["n"] = "";
+
+        // Colors vary by preset
+        JsonArray colors = segment.createNestedArray("col");
+        if (i == 3) { // BlueGreen
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(0); col1.add(0); col1.add(255);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(8); col2.add(255); col2.add(0);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 3;
+        } else if (i == 4) { // C9
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(0); col1.add(0); col1.add(255);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(8); col2.add(255); col2.add(0);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 48;
+        } else if (i == 5) { // BlueRed
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(255); col1.add(0); col1.add(0);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(0); col2.add(0); col2.add(255);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 3;
+        } else if (i == 6) { // Synth
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(255); col1.add(0); col1.add(255);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(0); col2.add(255); col2.add(200);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 3;
+        } else if (i == 7) { // PurpleGreen
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(255); col1.add(0); col1.add(255);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(8); col2.add(255); col2.add(0);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 3;
+        } else if (i == 8) { // BlueOrange
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(0); col1.add(0); col1.add(255);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(255); col2.add(149); col2.add(0);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 3;
+        } else if (i == 9) { // OrangeCyan
+            JsonArray col1 = colors.createNestedArray();
+            col1.add(255); col1.add(160); col1.add(0);
+            JsonArray col2 = colors.createNestedArray();
+            col2.add(0); col2.add(255); col2.add(200);
+            JsonArray col3 = colors.createNestedArray();
+            col3.add(0); col3.add(0); col3.add(0);
+            segment["pal"] = 3;
+        }
+
+        segment["fx"] = 65;
+        segment["sx"] = 128;
+        segment["ix"] = 112;
+        segment["c1"] = 0;
+        segment["c2"] = 128;
+        segment["c3"] = 16;
+        segment["sel"] = true;
+        segment["rev"] = false;
+        segment["mi"] = false;
+        segment["o1"] = true;
+        segment["o2"] = false;
+        segment["o3"] = true;
+        segment["si"] = 0;
+        segment["m12"] = 0;
+
+        // Add 32 "stop": 0 objects
+        for (int j = 0; j < 32; j++) {
+            JsonObject stopObj = segArray.createNestedObject();
+            stopObj["stop"] = 0;
+        }
+
+        // Set preset names
+        if (i == 3) preset["n"] = "BlueGreen";
+        else if (i == 4) preset["n"] = "C9";
+        else if (i == 5) preset["n"] = "BlueRed";
+        else if (i == 6) preset["n"] = "Synth";
+        else if (i == 7) preset["n"] = "PurpleGreen";
+        else if (i == 8) preset["n"] = "BlueOrange";
+        else if (i == 9) preset["n"] = "OrangeCyan";
+    }
+
+    // Write the JSON to presets.json
+    File presetJsonFile = WLED_FS.open("/presets.json", "w");
+    if (!presetJsonFile) {
+        Serial.println("Failed to open presets.json for writing");
+        return;
+    }
+
+    if (serializeJson(doc, presetJsonFile) == 0) {
+        Serial.println("Failed to write to presets.json");
+    } else {
+        Serial.println("Preset data written to presets.json");
+    }
+
+    presetJsonFile.close();
+}
+
+void initPresetsFile() {
+    // Dit is een default WLED functie
+    // Onderstaande toevoeging roept bovenstaande twee nieuwe functies aan
+    writeHardcodedPresetJson();
+
   char fileName[33]; strncpy_P(fileName, getPresetsFileName(), 32); fileName[32] = 0; //use PROGMEM safe copy as FS.open() does not
   if (WLED_FS.exists(fileName)) return;
 
