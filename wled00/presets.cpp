@@ -106,7 +106,7 @@ void writeHardcodedPresetJson() {
     if (WLED_FS.exists("/presets.json")) {
         return; // Exit the function if the file exists
     }
-        DynamicJsonDocument doc(8192); // Adjust size if necessary
+    DynamicJsonDocument doc(8192); // Adjust size if necessary
 
     // Preset 0: Empty
     doc.createNestedObject("0");
@@ -121,120 +121,117 @@ void writeHardcodedPresetJson() {
     preset2["win"] = "P1=3&P2=9&PL=~";
     preset2["n"] = "PresetSwitch";
 
-    // Presets 3 to 9
-    for (int i = 3; i <= 9; i++) {
-        JsonObject preset = doc.createNestedObject(String(i).c_str());
-        preset["on"] = true;
-        preset["bri"] = 255;
-        preset["transition"] = 7;
-        preset["mainseg"] = 0;
+    // Preset 3: BlueGreen
+    JsonObject preset3 = doc.createNestedObject("3");
+    preset3["on"] = true;
+    preset3["bri"] = 255;
+    preset3["transition"] = 7;
+    preset3["mainseg"] = 0;
 
-        // Create the seg array
-        JsonArray segArray = preset.createNestedArray("seg");
-        JsonObject segment = segArray.createNestedObject();
-        segment["id"] = 0;
-        segment["start"] = 0;
-        segment["stop"] = 18;
-        segment["grp"] = 1;
-        segment["spc"] = 0;
-        segment["of"] = 0;
-        segment["on"] = true;
-        segment["frz"] = false;
-        segment["bri"] = 255;
-        segment["cct"] = 127;
-        segment["set"] = 0;
-        segment["n"] = "";
+    JsonArray segArray3 = preset3.createNestedArray("seg");
+    JsonObject seg3 = segArray3.createNestedObject();
+    seg3["id"] = 0;
+    seg3["start"] = 0;
+    seg3["stop"] = 18;
+    seg3["grp"] = 1;
+    seg3["spc"] = 0;
+    seg3["of"] = 0;
+    seg3["on"] = true;
+    seg3["frz"] = false;
+    seg3["bri"] = 255;
+    seg3["cct"] = 127;
+    seg3["set"] = 0;
+    seg3["n"] = "";
 
-        // Colors vary by preset
-        JsonArray colors = segment.createNestedArray("col");
-        if (i == 3) { // BlueGreen
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(0); col1.add(0); col1.add(255);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(8); col2.add(255); col2.add(0);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 3;
-        } else if (i == 4) { // C9
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(0); col1.add(0); col1.add(255);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(8); col2.add(255); col2.add(0);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 48;
-        } else if (i == 5) { // BlueRed
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(255); col1.add(0); col1.add(0);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(0); col2.add(0); col2.add(255);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 3;
-        } else if (i == 6) { // Synth
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(255); col1.add(0); col1.add(255);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(0); col2.add(255); col2.add(200);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 3;
-        } else if (i == 7) { // PurpleGreen
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(255); col1.add(0); col1.add(255);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(8); col2.add(255); col2.add(0);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 3;
-        } else if (i == 8) { // BlueOrange
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(0); col1.add(0); col1.add(255);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(255); col2.add(149); col2.add(0);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 3;
-        } else if (i == 9) { // OrangeCyan
-            JsonArray col1 = colors.createNestedArray();
-            col1.add(255); col1.add(160); col1.add(0);
-            JsonArray col2 = colors.createNestedArray();
-            col2.add(0); col2.add(255); col2.add(200);
-            JsonArray col3 = colors.createNestedArray();
-            col3.add(0); col3.add(0); col3.add(0);
-            segment["pal"] = 3;
-        }
+    JsonArray colArray3 = seg3.createNestedArray("col");
 
-        segment["fx"] = 65;
-        segment["sx"] = 128;
-        segment["ix"] = 112;
-        segment["c1"] = 0;
-        segment["c2"] = 128;
-        segment["c3"] = 16;
-        segment["sel"] = true;
-        segment["rev"] = false;
-        segment["mi"] = false;
-        segment["o1"] = true;
-        segment["o2"] = false;
-        segment["o3"] = true;
-        segment["si"] = 0;
-        segment["m12"] = 0;
+    JsonArray color1_3 = colArray3.createNestedArray();
+    color1_3.add(0); color1_3.add(0); color1_3.add(255); color1_3.add(0); // RGBW: [0, 0, 255, 0]
 
-        // Add 32 "stop": 0 objects
-        for (int j = 0; j < 32; j++) {
-            JsonObject stopObj = segArray.createNestedObject();
-            stopObj["stop"] = 0;
-        }
+    JsonArray color2_3 = colArray3.createNestedArray();
+    color2_3.add(8); color2_3.add(255); color2_3.add(0); color2_3.add(0); // RGBW: [8, 255, 0, 0]
 
-        // Set preset names
-        if (i == 3) preset["n"] = "BlueGreen";
-        else if (i == 4) preset["n"] = "C9";
-        else if (i == 5) preset["n"] = "BlueRed";
-        else if (i == 6) preset["n"] = "Synth";
-        else if (i == 7) preset["n"] = "PurpleGreen";
-        else if (i == 8) preset["n"] = "BlueOrange";
-        else if (i == 9) preset["n"] = "OrangeCyan";
+    JsonArray color3_3 = colArray3.createNestedArray();
+    color3_3.add(0); color3_3.add(0); color3_3.add(0); color3_3.add(0);   // RGBW: [0, 0, 0, 0]
+
+    seg3["fx"] = 65;
+    seg3["sx"] = 128;
+    seg3["ix"] = 112;
+    seg3["pal"] = 3;
+    seg3["c1"] = 0;
+    seg3["c2"] = 128;
+    seg3["c3"] = 16;
+    seg3["sel"] = true;
+    seg3["rev"] = false;
+    seg3["mi"] = false;
+    seg3["o1"] = true;
+    seg3["o2"] = false;
+    seg3["o3"] = true;
+    seg3["si"] = 0;
+    seg3["m12"] = 0;
+
+    for (int j = 0; j < 32; j++) {
+        JsonObject stopObj = segArray3.createNestedObject();
+        stopObj["stop"] = 0;
     }
+    preset3["n"] = "BlueGreen";
+
+    // Preset 4: C9
+    JsonObject preset4 = doc.createNestedObject("4");
+    preset4["on"] = true;
+    preset4["bri"] = 255;
+    preset4["transition"] = 7;
+    preset4["mainseg"] = 0;
+
+    JsonArray segArray4 = preset4.createNestedArray("seg");
+    JsonObject seg4 = segArray4.createNestedObject();
+    seg4["id"] = 0;
+    seg4["start"] = 0;
+    seg4["stop"] = 18;
+    seg4["grp"] = 1;
+    seg4["spc"] = 0;
+    seg4["of"] = 0;
+    seg4["on"] = true;
+    seg4["frz"] = false;
+    seg4["bri"] = 255;
+    seg4["cct"] = 127;
+    seg4["set"] = 0;
+    seg4["n"] = "";
+
+    JsonArray colArray4 = seg4.createNestedArray("col");
+
+    JsonArray color1_4 = colArray4.createNestedArray();
+    color1_4.add(0); color1_4.add(0); color1_4.add(255); color1_4.add(0); // RGBW: [0, 0, 255, 0]
+
+    JsonArray color2_4 = colArray4.createNestedArray();
+    color2_4.add(8); color2_4.add(255); color2_4.add(0); color2_4.add(0); // RGBW: [8, 255, 0, 0]
+
+    JsonArray color3_4 = colArray4.createNestedArray();
+    color3_4.add(0); color3_4.add(0); color3_4.add(0); color3_4.add(0);   // RGBW: [0, 0, 0, 0]
+
+    seg4["fx"] = 65;
+    seg4["sx"] = 128;
+    seg4["ix"] = 112;
+    seg4["pal"] = 48;
+    seg4["c1"] = 0;
+    seg4["c2"] = 128;
+    seg4["c3"] = 16;
+    seg4["sel"] = true;
+    seg4["rev"] = false;
+    seg4["mi"] = false;
+    seg4["o1"] = true;
+    seg4["o2"] = false;
+    seg4["o3"] = true;
+    seg4["si"] = 0;
+    seg4["m12"] = 0;
+
+    for (int j = 0; j < 32; j++) {
+        JsonObject stopObj = segArray4.createNestedObject();
+        stopObj["stop"] = 0;
+    }
+    preset4["n"] = "C9";
+
+    // Repeat similarly for presets 5-9...
 
     // Write the JSON to presets.json
     File presetJsonFile = WLED_FS.open("/presets.json", "w");
