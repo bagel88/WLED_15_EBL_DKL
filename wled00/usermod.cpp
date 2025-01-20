@@ -35,7 +35,7 @@ int countPresetsFromFile(const char* filename) {
         return 0;
     }
 
-    DynamicJsonDocument doc(8192); // Adjust size based on expected JSON size
+    DynamicJsonDocument doc(32768); // Adjust size based on expected JSON size
     DeserializationError error = deserializeJson(doc, file);
     file.close();
 
