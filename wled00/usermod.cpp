@@ -1,5 +1,4 @@
 #include "wled.h"
-#include "EEPROM.h"
 /*
  * This v1 usermod file allows you to add own functionality to WLED more easily
  * See: https://github.com/Aircoookie/WLED/wiki/Add-own-functionality
@@ -16,7 +15,7 @@
 #define FIRST_BOOT_FLAG_FILE "/first_boot_flag.txt"
 
 // Function to count presets in the JSON file, ignoring the "0" preset
-int countPresetsFromFile(const char* filename) {
+int BootcountPresetsFromFile(const char* filename) {
     if (!WLED_FS.begin()) {
         Serial.println("WLED_FS mount failed!");
         return -1;
@@ -78,6 +77,7 @@ int countPresetsFromFile(const char* filename) {
 
     serializeJson(root, file);
     file.close();
+    updateFSInfo();
 
     return count;
 }
@@ -91,7 +91,7 @@ void userSetup()
     }
 
         // Update presets in file and count them every boot
-    int presetCount = countPresetsFromFile("/presets.json");
+    int presetCount = BootcountPresetsFromFile("/presets.json");
     if (presetCount >= 0) {
         Serial.print("Number of presets (excluding '0'): ");
         Serial.println(presetCount);
