@@ -167,6 +167,16 @@ int countPresetsFromFile(const char* filename) {
     return count;
 }
 
+bool acquireJSONBufferLock(uint8_t retries = 5, uint16_t delayMs = 50) {
+  for (uint8_t attempt = 0; attempt < retries; attempt++) {
+    if (requestJSONBufferLock(9)) {
+      return true; // Lock acquired
+    }
+    delay(delayMs); // Wait before retrying
+  }
+  return false; // Failed to acquire lock
+}
+
 void writeHardcodedPresetJson() {
     // Nieuwe functie voor het hardcoden van presets in WLED
     
@@ -511,8 +521,77 @@ void savePreset(byte index, const char* pname, JsonObject sObj)
 }
 
 void deletePreset(byte index) {
-  StaticJsonDocument<24> empty;
+  // Original functionality
+/*   StaticJsonDocument<24> empty;
   writeObjectToFileUsingId(getPresetsFileName(), index, &empty);
   presetsModifiedTime = toki.second(); //unix time
+  updateFSInfo(); */
+
+    // Open the presets.json file for reading
+  File file = WLED_FS.open("/presets.json", "r");
+  if (!file) {
+    Serial.println("Error: Failed to open presets.json for reading");
+    return;
+  }
+
+  // Parse the JSON file into a DynamicJsonDocument
+  DynamicJsonDocument doc(32768); // Adjust size based on presets.json size
+  DeserializationError error = deserializeJson(doc, file);
+  file.close();
+
+  if (error) {
+    Serial.println("Error: Failed to parse presets.json");
+    return;
+  }
+
+  // Get the root JSON object
+  JsonObject root = doc.as<JsonObject>();
+
+  // Check if the preset exists and delete it
+  String targetKey = String(index);
+  if (!root.containsKey(targetKey)) {
+    Serial.println("Error: Preset not found");
+    return;
+  }
+  root.remove(targetKey);
+  Serial.printf("Deleted preset ID %d\n", index);
+
+  // Shift IDs down for presets with higher IDs
+  for (byte i = index + 1; i < 255; i++) { // Assuming max ID is 254
+    String currentKey = String(i);
+    String newKey = String(i - 1);
+
+    if (root.containsKey(currentKey)) {
+      // Move the preset to the new key
+      JsonObject preset = root[currentKey].as<JsonObject>();
+      JsonObject newPreset = root.createNestedObject(newKey);
+      for (JsonPair p : preset) {
+        newPreset[p.key()] = p.value();
+      }
+      root.remove(currentKey); // Remove the old key
+      Serial.printf("Shifted preset ID %d to %d\n", i, i - 1);
+    } else {
+      break; // Stop if there are no more presets to shift
+    }
+  }
+
+  // Open the file for writing to save the changes
+  file = WLED_FS.open("/presets.json", "w");
+  if (!file) {
+    Serial.println("Error: Failed to open presets.json for writing");
+    return;
+  }
+
+  // Serialize the modified JSON object back into the file
+  if (serializeJson(doc, file) == 0) {
+    Serial.println("Error: Failed to write presets.json");
+  } else {
+    Serial.println("Preset deleted and IDs shifted successfully");
+  }
+
+  file.close();
+
+  // Update filesystem metadata
+  presetsModifiedTime = toki.second(); // Update with the current Unix time
   updateFSInfo();
 }
