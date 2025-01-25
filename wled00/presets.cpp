@@ -167,6 +167,74 @@ int countPresetsFromFile(const char* filename) {
     return count;
 }
 
+int countPresetsFromFileOnDelete(const char* filename) {
+    if (!WLED_FS.begin()) {
+        Serial.println("WLED_FS mount failed!");
+        return -1;
+    }
+
+    File file = WLED_FS.open(filename, "r");
+    if (!file) {
+        Serial.println("Failed to open file!");
+        return -1;
+    }
+
+    size_t size = file.size();
+    if (size == 0) {
+        Serial.println("Empty file!");
+        file.close();
+        return 0;
+    }
+
+    DynamicJsonDocument doc(32768); // Adjust size based on expected JSON size
+    DeserializationError error = deserializeJson(doc, file);
+    file.close();
+
+    if (error) {
+        Serial.print("deserializeJson() failed: ");
+        Serial.println(error.f_str());
+        return -1;
+    }
+
+    JsonObject root = doc.as<JsonObject>();  // Extract the root object
+
+    int count = 0;
+    for (JsonObject::iterator it = root.begin(); it != root.end(); ++it) {
+        if (strcmp(it->key().c_str(), "0") != 0) {
+            count++;
+        }
+    }
+
+    //int actualCount = count + 1; // Adds 1 to count
+
+    // Update "P1=3&P2=9&PL=~" with the new count
+    for (JsonObject::iterator it = root.begin(); it != root.end(); ++it) {
+        JsonObject preset = it->value().as<JsonObject>();
+        if (preset.containsKey("win")) {
+            String winValue = preset["win"].as<String>();
+            int pos = winValue.indexOf("&P2=");
+            if (pos != -1) {
+                String before = winValue.substring(0, pos + 4); // "P1=3&P2="
+                String after = winValue.substring(winValue.indexOf("&PL=")); // "&PL=~"
+                String newWinValue = before + count + after;
+                preset["win"] = newWinValue;
+            }
+        }
+    }
+
+    // Save the updated JSON back to the file
+    file = WLED_FS.open(filename, "w");
+    if (!file) {
+        Serial.println("Failed to open file for writing!");
+        return -1;
+    }
+
+    serializeJson(root, file);
+    file.close();
+
+    return count;
+}
+
 bool acquireJSONBufferLock(uint8_t retries = 5, uint16_t delayMs = 50) {
   for (uint8_t attempt = 0; attempt < retries; attempt++) {
     if (requestJSONBufferLock(9)) {
@@ -590,6 +658,17 @@ void deletePreset(byte index) {
   }
 
   file.close();
+
+  // Update presets in file and count them every boot
+  int presetCount = countPresetsFromFileOnDelete("/presets.json");
+  if (presetCount >= 0) {
+    Serial.print("Number of presets (excluding '0'): ");
+    Serial.println(presetCount);
+    presetsModifiedTime = toki.second(); //unix time
+    updateFSInfo();
+  } else {
+    Serial.println("Error updating presets.");
+  }
 
   // Update filesystem metadata
   presetsModifiedTime = toki.second(); // Update with the current Unix time
