@@ -589,13 +589,11 @@ void savePreset(byte index, const char* pname, JsonObject sObj)
 }
 
 void deletePreset(byte index) {
-  // Original functionality
-/*   StaticJsonDocument<24> empty;
-  writeObjectToFileUsingId(getPresetsFileName(), index, &empty);
-  presetsModifiedTime = toki.second(); //unix time
-  updateFSInfo(); */
-
-    // Open the presets.json file for reading
+    // Prevent deletion of presets with ID 1 and 2
+    if (index == 1 || index == 2) {
+        Serial.printf("Error: Preset ID %d cannot be deleted\n", index);
+        return;
+  }
   File file = WLED_FS.open("/presets.json", "r");
   if (!file) {
     Serial.println("Error: Failed to open presets.json for reading");
