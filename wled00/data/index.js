@@ -2038,9 +2038,13 @@ ${makePlSel(plJson[i].end?plJson[i].end:0, true)}
 <div class="h">(leave empty for no Quick load button)</div>
 <div ${pl&&i==0?"style='display:none'":""}>
 <label class="check revchkl">
-	<span class="lstIname">${pl?"Show playlist editor":(i>0)?"Overwrite with state":"Use current state"}</span>
-	<input type="checkbox" id="p${i}cstgl" onchange="tglCs(${i})" ${(i==0||pl)?"checked":""}>
-	<span class="checkmark"></span>
+	<span class="lstIname">
+		${pl ? "Show playlist editor" : (i > 0 ? "" : "Use current state")}
+	</span>
+	<input type="checkbox" id="p${i}cstgl" onchange="tglCs(${i})" 
+		${(i == 0 || pl) ? "checked" : ""}
+		${(i > 0) ? "disabled style='display:none;'" : ""}>
+	<span class="checkmark" ${i > 0 ? "style='display:none;'" : ""}></span>
 </label>
 </div>
 <div class="po2" id="p${i}o2">API command<br><textarea class="apitxt" id="p${i}api"></textarea></div>
