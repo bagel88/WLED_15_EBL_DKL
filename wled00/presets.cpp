@@ -246,154 +246,291 @@ bool acquireJSONBufferLock(uint8_t retries = 5, uint16_t delayMs = 50) {
 }
 
 void writeHardcodedPresetJson() {
-    // Nieuwe functie voor het hardcoden van presets in WLED
-    
-    // Maak JSON document
-        // Check if the file already exists
-    if (WLED_FS.exists("/presets.json")) {
-        return; // Exit the function if the file exists
-    }
-    DynamicJsonDocument doc(8192); // Adjust size if necessary
+  // Nieuwe functie voor het hardcoden van presets in WLED
+  
+  // Maak JSON document
+      // Check if the file already exists
+  if (WLED_FS.exists("/presets.json")) {
+      return; // Exit the function if the file exists
+  }
+  DynamicJsonDocument doc(32768); // Adjust size if necessary
 
-    // Preset 0: Empty
-    doc.createNestedObject("0");
+// Preset 0: Empty
+  doc["0"] = JsonObject();
 
-    // Preset 1
-    JsonObject preset1 = doc.createNestedObject("1");
-    preset1["win"] = "T=2";
-    preset1["n"] = "OnOff";
+  // Preset 1: OnOff
+  JsonObject p1 = doc.createNestedObject("1");
+  p1["win"] = "T=2";
+  p1["n"] = "OnOff";
 
-    // Preset 2
-    JsonObject preset2 = doc.createNestedObject("2");
-    preset2["win"] = "P1=3&P2=9&PL=~";
-    preset2["n"] = "PresetSwitch";
+  // Preset 2: PresetSwitch
+  JsonObject p2 = doc.createNestedObject("2");
+  p2["win"] = "P1=3&P2=8&PL=~";
+  p2["n"] = "PresetSwitch";
 
-    // Preset 3: BlueGreen
-    JsonObject preset3 = doc.createNestedObject("3");
-    preset3["on"] = true;
-    preset3["bri"] = 255;
-    preset3["transition"] = 7;
-    preset3["mainseg"] = 0;
+  // Preset 3: BlueGreen
+  JsonObject p3 = doc.createNestedObject("3");
+  p3["on"] = true;
+  p3["bri"] = 255;
+  p3["transition"] = 7;
+  p3["mainseg"] = 0;
+  JsonArray p3_seg = p3.createNestedArray("seg");
+  JsonObject p3_seg_0 = p3_seg.createNestedObject();
+  p3_seg_0["id"] = 0;
+  p3_seg_0["start"] = 0;
+  p3_seg_0["stop"] = 18;
+  p3_seg_0["grp"] = 1;
+  p3_seg_0["spc"] = 0;
+  p3_seg_0["of"] = 0;
+  p3_seg_0["on"] = true;
+  p3_seg_0["frz"] = false;
+  p3_seg_0["bri"] = 255;
+  p3_seg_0["cct"] = 127;
+  p3_seg_0["set"] = 0;
+  JsonArray p3_col = p3_seg_0.createNestedArray("col");
+  JsonArray p3_col_0 = p3_col.createNestedArray(); p3_col_0.add(0); p3_col_0.add(0); p3_col_0.add(255); p3_col_0.add(0);
+  JsonArray p3_col_1 = p3_col.createNestedArray(); p3_col_1.add(8); p3_col_1.add(255); p3_col_1.add(0); p3_col_1.add(0);
+  JsonArray p3_col_2 = p3_col.createNestedArray(); p3_col_2.add(0); p3_col_2.add(0); p3_col_2.add(0); p3_col_2.add(0);
+  p3_seg_0["fx"] = 65;
+  p3_seg_0["sx"] = 128;
+  p3_seg_0["ix"] = 112;
+  p3_seg_0["pal"] = 3;
+  p3_seg_0["c1"] = 0;
+  p3_seg_0["c2"] = 128;
+  p3_seg_0["c3"] = 16;
+  p3_seg_0["sel"] = true;
+  p3_seg_0["rev"] = false;
+  p3_seg_0["mi"] = false;
+  p3_seg_0["o1"] = true;
+  p3_seg_0["o2"] = false;
+  p3_seg_0["o3"] = true;
+  p3_seg_0["si"] = 0;
+  p3_seg_0["m12"] = 0;
+  for (int i = 1; i < 32; i++) p3_seg.createNestedObject()["stop"] = 0;
+  p3["n"] = "BlueGreen";
 
-    JsonArray segArray3 = preset3.createNestedArray("seg");
-    JsonObject seg3 = segArray3.createNestedObject();
-    seg3["id"] = 0;
-    seg3["start"] = 0;
-    seg3["stop"] = 18;
-    seg3["grp"] = 1;
-    seg3["spc"] = 0;
-    seg3["of"] = 0;
-    seg3["on"] = true;
-    seg3["frz"] = false;
-    seg3["bri"] = 255;
-    seg3["cct"] = 127;
-    seg3["set"] = 0;
-    seg3["n"] = "";
+  // Preset 4: BlueOrange
+  JsonObject p4 = doc.createNestedObject("4");
+  p4["on"] = true;
+  p4["bri"] = 255;
+  p4["transition"] = 7;
+  p4["mainseg"] = 0;
+  JsonArray p4_seg = p4.createNestedArray("seg");
+  JsonObject p4_seg_0 = p4_seg.createNestedObject();
+  p4_seg_0["id"] = 0;
+  p4_seg_0["start"] = 0;
+  p4_seg_0["stop"] = 18;
+  p4_seg_0["grp"] = 1;
+  p4_seg_0["spc"] = 0;
+  p4_seg_0["of"] = 0;
+  p4_seg_0["on"] = true;
+  p4_seg_0["frz"] = false;
+  p4_seg_0["bri"] = 255;
+  p4_seg_0["cct"] = 127;
+  p4_seg_0["set"] = 0;
+  JsonArray p4_col = p4_seg_0.createNestedArray("col");
+  JsonArray p4_col_0 = p4_col.createNestedArray(); p4_col_0.add(0); p4_col_0.add(0); p4_col_0.add(255);
+  JsonArray p4_col_1 = p4_col.createNestedArray(); p4_col_1.add(255); p4_col_1.add(160); p4_col_1.add(0);
+  JsonArray p4_col_2 = p4_col.createNestedArray(); p4_col_2.add(0); p4_col_2.add(0); p4_col_2.add(0);
+  p4_seg_0["fx"] = 65;
+  p4_seg_0["sx"] = 128;
+  p4_seg_0["ix"] = 112;
+  p4_seg_0["pal"] = 3;
+  p4_seg_0["c1"] = 0;
+  p4_seg_0["c2"] = 128;
+  p4_seg_0["c3"] = 16;
+  p4_seg_0["sel"] = true;
+  p4_seg_0["rev"] = false;
+  p4_seg_0["mi"] = false;
+  p4_seg_0["o1"] = true;
+  p4_seg_0["o2"] = false;
+  p4_seg_0["o3"] = true;
+  p4_seg_0["si"] = 0;
+  p4_seg_0["m12"] = 0;
+  for (int i = 1; i < 32; i++) p4_seg.createNestedArray().add(0);
+  p4["n"] = "BlueOrange";
 
-    JsonArray colArray3 = seg3.createNestedArray("col");
+  // Preset 5: C9
+  JsonObject p5 = doc.createNestedObject("5");
+  p5["on"] = true;
+  p5["bri"] = 255;
+  p5["transition"] = 7;
+  p5["mainseg"] = 0;
+  JsonArray p5_seg = p5.createNestedArray("seg");
+  JsonObject p5_seg_0 = p5_seg.createNestedObject();
+  p5_seg_0["id"] = 0;
+  p5_seg_0["start"] = 0;
+  p5_seg_0["stop"] = 18;
+  p5_seg_0["grp"] = 1;
+  p5_seg_0["spc"] = 0;
+  p5_seg_0["of"] = 0;
+  p5_seg_0["on"] = true;
+  p5_seg_0["frz"] = false;
+  p5_seg_0["bri"] = 255;
+  p5_seg_0["cct"] = 127;
+  p5_seg_0["set"] = 0;
+  p5_seg_0["n"] = "";
+  JsonArray p5_col = p5_seg_0.createNestedArray("col");
+  JsonArray p5_col_0 = p5_col.createNestedArray(); p5_col_0.add(255); p5_col_0.add(0); p5_col_0.add(0);
+  JsonArray p5_col_1 = p5_col.createNestedArray(); p5_col_1.add(0); p5_col_1.add(0); p5_col_1.add(255);
+  JsonArray p5_col_2 = p5_col.createNestedArray(); p5_col_2.add(8); p5_col_2.add(255); p5_col_2.add(0);
+  p5_seg_0["fx"] = 65;
+  p5_seg_0["sx"] = 128;
+  p5_seg_0["ix"] = 112;
+  p5_seg_0["pal"] = 52;
+  p5_seg_0["c1"] = 0;
+  p5_seg_0["c2"] = 128;
+  p5_seg_0["c3"] = 16;
+  p5_seg_0["sel"] = true;
+  p5_seg_0["rev"] = false;
+  p5_seg_0["mi"] = false;
+  p5_seg_0["o1"] = true;
+  p5_seg_0["o2"] = false;
+  p5_seg_0["o3"] = true;
+  p5_seg_0["si"] = 0;
+  p5_seg_0["m12"] = 0;
+  for (int i = 1; i < 32; i++) p5_seg.createNestedObject()["stop"] = 0;
+  p5["n"] = "C9";
 
-    JsonArray color1_3 = colArray3.createNestedArray();
-    color1_3.add(0); color1_3.add(0); color1_3.add(255); color1_3.add(0); // RGBW: [0, 0, 255, 0]
+  // Preset 6: Synth
+  JsonObject p6 = doc.createNestedObject("6");
+  p6["on"] = true;
+  p6["bri"] = 255;
+  p6["transition"] = 7;
+  p6["mainseg"] = 0;
+  JsonArray p6_seg = p6.createNestedArray("seg");
+  JsonObject p6_seg_0 = p6_seg.createNestedObject();
+  p6_seg_0["id"] = 0;
+  p6_seg_0["start"] = 0;
+  p6_seg_0["stop"] = 18;
+  p6_seg_0["grp"] = 1;
+  p6_seg_0["spc"] = 0;
+  p6_seg_0["of"] = 0;
+  p6_seg_0["on"] = true;
+  p6_seg_0["frz"] = false;
+  p6_seg_0["bri"] = 255;
+  p6_seg_0["cct"] = 127;
+  p6_seg_0["set"] = 0;
+  JsonArray p6_col = p6_seg_0.createNestedArray("col");
+  JsonArray p6_col_0 = p6_col.createNestedArray(); p6_col_0.add(255); p6_col_0.add(0); p6_col_0.add(255);
+  JsonArray p6_col_1 = p6_col.createNestedArray(); p6_col_1.add(0); p6_col_1.add(255); p6_col_1.add(200);
+  JsonArray p6_col_2 = p6_col.createNestedArray(); p6_col_2.add(8); p6_col_2.add(255); p6_col_2.add(0);
+  p6_seg_0["fx"] = 65;
+  p6_seg_0["sx"] = 128;
+  p6_seg_0["ix"] = 112;
+  p6_seg_0["pal"] = 3;
+  p6_seg_0["c1"] = 0;
+  p6_seg_0["c2"] = 128;
+  p6_seg_0["c3"] = 16;
+  p6_seg_0["sel"] = true;
+  p6_seg_0["rev"] = false;
+  p6_seg_0["mi"] = false;
+  p6_seg_0["o1"] = true;
+  p6_seg_0["o2"] = false;
+  p6_seg_0["o3"] = true;
+  p6_seg_0["si"] = 0;
+  p6_seg_0["m12"] = 0;
+  for (int i = 1; i < 32; i++) p6_seg.createNestedObject()["stop"] = 0;
+  p6["n"] = "Synth";
 
-    JsonArray color2_3 = colArray3.createNestedArray();
-    color2_3.add(8); color2_3.add(255); color2_3.add(0); color2_3.add(0); // RGBW: [8, 255, 0, 0]
+  // Preset 7: RedBlue
+  JsonObject p7 = doc.createNestedObject("7");
+  p7["on"] = true;
+  p7["bri"] = 255;
+  p7["transition"] = 7;
+  p7["mainseg"] = 0;
+  JsonArray p7_seg = p7.createNestedArray("seg");
+  JsonObject p7_seg_0 = p7_seg.createNestedObject();
+  p7_seg_0["id"] = 0;
+  p7_seg_0["start"] = 0;
+  p7_seg_0["stop"] = 18;
+  p7_seg_0["grp"] = 1;
+  p7_seg_0["spc"] = 0;
+  p7_seg_0["of"] = 0;
+  p7_seg_0["on"] = true;
+  p7_seg_0["frz"] = false;
+  p7_seg_0["bri"] = 255;
+  p7_seg_0["cct"] = 127;
+  p7_seg_0["set"] = 0;
+  p7_seg_0["n"] = "";
+  JsonArray p7_col = p7_seg_0.createNestedArray("col");
+  JsonArray p7_col_0 = p7_col.createNestedArray(); p7_col_0.add(0); p7_col_0.add(0); p7_col_0.add(255);
+  JsonArray p7_col_1 = p7_col.createNestedArray(); p7_col_1.add(255); p7_col_1.add(0); p7_col_1.add(106);
+  JsonArray p7_col_2 = p7_col.createNestedArray(); p7_col_2.add(0); p7_col_2.add(0); p7_col_2.add(0);
+  p7_seg_0["fx"] = 65;
+  p7_seg_0["sx"] = 128;
+  p7_seg_0["ix"] = 112;
+  p7_seg_0["pal"] = 3;
+  p7_seg_0["c1"] = 0;
+  p7_seg_0["c2"] = 128;
+  p7_seg_0["c3"] = 16;
+  p7_seg_0["sel"] = true;
+  p7_seg_0["rev"] = false;
+  p7_seg_0["mi"] = false;
+  p7_seg_0["o1"] = true;
+  p7_seg_0["o2"] = false;
+  p7_seg_0["o3"] = true;
+  p7_seg_0["si"] = 0;
+  p7_seg_0["m12"] = 0;
+  for (int i = 1; i < 32; i++) p7_seg.createNestedObject()["stop"] = 0;
+  p7["n"] = "RedBlue";
 
-    JsonArray color3_3 = colArray3.createNestedArray();
-    color3_3.add(0); color3_3.add(0); color3_3.add(0); color3_3.add(0);   // RGBW: [0, 0, 0, 0]
+  // Preset 8: PurpleGreen
+  JsonObject p8 = doc.createNestedObject("8");
+  p8["on"] = true;
+  p8["bri"] = 255;
+  p8["transition"] = 7;
+  p8["mainseg"] = 0;
+  JsonArray p8_seg = p8.createNestedArray("seg");
+  JsonObject p8_seg_0 = p8_seg.createNestedObject();
+  p8_seg_0["id"] = 0;
+  p8_seg_0["start"] = 0;
+  p8_seg_0["stop"] = 18;
+  p8_seg_0["grp"] = 1;
+  p8_seg_0["spc"] = 0;
+  p8_seg_0["of"] = 0;
+  p8_seg_0["on"] = true;
+  p8_seg_0["frz"] = false;
+  p8_seg_0["bri"] = 255;
+  p8_seg_0["cct"] = 127;
+  p8_seg_0["set"] = 0;
+  p8_seg_0["n"] = "";
+  JsonArray p8_col = p8_seg_0.createNestedArray("col");
+  JsonArray p8_col_0 = p8_col.createNestedArray(); p8_col_0.add(157); p8_col_0.add(0); p8_col_0.add(255);
+  JsonArray p8_col_1 = p8_col.createNestedArray(); p8_col_1.add(8); p8_col_1.add(255); p8_col_1.add(0);
+  JsonArray p8_col_2 = p8_col.createNestedArray(); p8_col_2.add(8); p8_col_2.add(255); p8_col_2.add(0);
+  p8_seg_0["fx"] = 65;
+  p8_seg_0["sx"] = 128;
+  p8_seg_0["ix"] = 112;
+  p8_seg_0["pal"] = 3;
+  p8_seg_0["c1"] = 0;
+  p8_seg_0["c2"] = 128;
+  p8_seg_0["c3"] = 16;
+  p8_seg_0["sel"] = true;
+  p8_seg_0["rev"] = false;
+  p8_seg_0["mi"] = false;
+  p8_seg_0["o1"] = true;
+  p8_seg_0["o2"] = false;
+  p8_seg_0["o3"] = true;
+  p8_seg_0["si"] = 0;
+  p8_seg_0["m12"] = 0;
+  for (int i = 1; i < 32; i++) p8_seg.createNestedObject()["stop"] = 0;
+  p8["n"] = "PurpleGreen";
 
-    seg3["fx"] = 65;
-    seg3["sx"] = 128;
-    seg3["ix"] = 112;
-    seg3["pal"] = 3;
-    seg3["c1"] = 0;
-    seg3["c2"] = 128;
-    seg3["c3"] = 16;
-    seg3["sel"] = true;
-    seg3["rev"] = false;
-    seg3["mi"] = false;
-    seg3["o1"] = true;
-    seg3["o2"] = false;
-    seg3["o3"] = true;
-    seg3["si"] = 0;
-    seg3["m12"] = 0;
+  // Write the JSON to presets.json
+  File presetJsonFile = WLED_FS.open("/presets.json", "w");
+  if (!presetJsonFile) {
+      Serial.println("Failed to open presets.json for writing");
+      return;
+  }
 
-    for (int j = 0; j < 32; j++) {
-        JsonObject stopObj = segArray3.createNestedObject();
-        stopObj["stop"] = 0;
-    }
-    preset3["n"] = "BlueGreen";
+  if (serializeJson(doc, presetJsonFile) == 0) {
+      Serial.println("Failed to write to presets.json");
+  } else {
+      Serial.println("Preset data written to presets.json");
+  }
 
-    // Preset 4: C9
-    JsonObject preset4 = doc.createNestedObject("4");
-    preset4["on"] = true;
-    preset4["bri"] = 255;
-    preset4["transition"] = 7;
-    preset4["mainseg"] = 0;
-
-    JsonArray segArray4 = preset4.createNestedArray("seg");
-    JsonObject seg4 = segArray4.createNestedObject();
-    seg4["id"] = 0;
-    seg4["start"] = 0;
-    seg4["stop"] = 18;
-    seg4["grp"] = 1;
-    seg4["spc"] = 0;
-    seg4["of"] = 0;
-    seg4["on"] = true;
-    seg4["frz"] = false;
-    seg4["bri"] = 255;
-    seg4["cct"] = 127;
-    seg4["set"] = 0;
-    seg4["n"] = "";
-
-    JsonArray colArray4 = seg4.createNestedArray("col");
-
-    JsonArray color1_4 = colArray4.createNestedArray();
-    color1_4.add(0); color1_4.add(0); color1_4.add(255); color1_4.add(0); // RGBW: [0, 0, 255, 0]
-
-    JsonArray color2_4 = colArray4.createNestedArray();
-    color2_4.add(8); color2_4.add(255); color2_4.add(0); color2_4.add(0); // RGBW: [8, 255, 0, 0]
-
-    JsonArray color3_4 = colArray4.createNestedArray();
-    color3_4.add(0); color3_4.add(0); color3_4.add(0); color3_4.add(0);   // RGBW: [0, 0, 0, 0]
-
-    seg4["fx"] = 65;
-    seg4["sx"] = 128;
-    seg4["ix"] = 112;
-    seg4["pal"] = 48;
-    seg4["c1"] = 0;
-    seg4["c2"] = 128;
-    seg4["c3"] = 16;
-    seg4["sel"] = true;
-    seg4["rev"] = false;
-    seg4["mi"] = false;
-    seg4["o1"] = true;
-    seg4["o2"] = false;
-    seg4["o3"] = true;
-    seg4["si"] = 0;
-    seg4["m12"] = 0;
-
-    for (int j = 0; j < 32; j++) {
-        JsonObject stopObj = segArray4.createNestedObject();
-        stopObj["stop"] = 0;
-    }
-    preset4["n"] = "C9";
-
-    // Repeat similarly for presets 5-9...
-
-    // Write the JSON to presets.json
-    File presetJsonFile = WLED_FS.open("/presets.json", "w");
-    if (!presetJsonFile) {
-        Serial.println("Failed to open presets.json for writing");
-        return;
-    }
-
-    if (serializeJson(doc, presetJsonFile) == 0) {
-        Serial.println("Failed to write to presets.json");
-    } else {
-        Serial.println("Preset data written to presets.json");
-    }
-
-    presetJsonFile.close();
+  presetJsonFile.close();
 }
 
 void initPresetsFile() {
